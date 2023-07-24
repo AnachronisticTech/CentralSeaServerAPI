@@ -63,11 +63,11 @@ final class Merchant: Model, Content {
             .replacingOccurrences(of: "\"false\"", with: "false")
             .replacingOccurrences(of: "\"true\"", with: "true")
 
-        guard let villagerData = try? JSONEncoder().encode(dataJson) else {
-            throw Abort(.custom(code: 5, reasonPhrase: "Could not serialize villager data"))
-        }
+//        guard let villagerData = try? JSONEncoder().encode(dataJson) else {
+//            throw Abort(.custom(code: 5, reasonPhrase: "Could not serialize villager data"))
+//        }
 
-        guard let decodedVillager = try? JSONDecoder().decode(Villager.self, from: villagerData) else {
+        guard let decodedVillager = try? JSONDecoder().decode(Villager.self, from: Data(dataJson.utf8)) else {
             throw Abort(.custom(code: 6, reasonPhrase: "Could not deserialize villager data \(dataJson)"))
         }
 
