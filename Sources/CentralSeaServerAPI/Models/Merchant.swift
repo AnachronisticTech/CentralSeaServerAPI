@@ -63,7 +63,7 @@ final class Merchant: Model, Content {
             .replacingOccurrences(of: "\"false\"", with: "false")
             .replacingOccurrences(of: "\"true\"", with: "true")
 
-        guard let villagerData = dataJson.data(using: .utf8) else {
+        guard let villagerData = try? JSONEncoder().encode(dataJson) else {
             throw Abort(.custom(code: 5, reasonPhrase: "Could not serialize villager data"))
         }
 
