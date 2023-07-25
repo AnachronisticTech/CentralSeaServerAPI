@@ -43,29 +43,29 @@ final class Merchant: Model, Content {
 
     private static func parse(data: String) throws -> Villager {
         var dataJson: String = data
-        dataJson = dataJson.replacingOccurrences(of: "summon villager ~ ~ ~ ", with: "")
-        dataJson = dataJson.replacingOccurrences(of: "([A-Za-z]+):([0-9]|\"|false|true|\\[|\\{)", with: "\"$1\":$2", options: .regularExpression)
-        dataJson = dataJson.replacingOccurrences(of: "\"\\\"", with: "\"")
-        dataJson = dataJson.replacingOccurrences(of: "\\\"\"", with: "\"")
-        dataJson = dataJson.replacingOccurrences(of: "\\\"", with: "\"")
-        dataJson = dataJson.replacingOccurrences(of: "\"{", with: "{")
-        dataJson = dataJson.replacingOccurrences(of: "}\"", with: "}")
-        dataJson = dataJson.replacingOccurrences(of: "CustomName", with: "name")
-        dataJson = dataJson.replacingOccurrences(of: "Name", with: "name")
-        dataJson = dataJson.replacingOccurrences(of: "Offers", with: "offers")
-        dataJson = dataJson.replacingOccurrences(of: "Recipes", with: "recipes")
-        dataJson = dataJson.replacingOccurrences(of: "Count", with: "count")
-        dataJson = dataJson.replacingOccurrences(of: "StoredEnchantments", with: "enchantments")
-        dataJson = dataJson.replacingOccurrences(of: "Enchantment", with: "enchantment")
-        dataJson = dataJson.replacingOccurrences(of: "lvl", with: "level")
-        dataJson = dataJson.replacingOccurrences(of: "Potion", with: "potion")
-        dataJson = dataJson.replacingOccurrences(of: "CustomModelData", with: "customModelData")
-        dataJson = dataJson.replacingOccurrences(of: "\"false\"", with: "false")
-        dataJson = dataJson.replacingOccurrences(of: "\"true\"", with: "true")
-
-//        guard let villagerData = try? JSONEncoder().encode(dataJson) else {
-//            throw Abort(.custom(code: 5, reasonPhrase: "Could not serialize villager data"))
-//        }
+            .replacingOccurrences(of: Substitutions.In.summon, with: Substitutions.Out.summon)
+            .replacingOccurrences(of: Substitutions.In.regex, with: Substitutions.Out.regex, options: .regularExpression)
+            .replacingOccurrences(of: Substitutions.In.backslashes1, with: Substitutions.Out.backslash)
+        dataJson = dataJson
+            .replacingOccurrences(of: Substitutions.In.backslashes2, with: Substitutions.Out.backslash)
+            .replacingOccurrences(of: Substitutions.In.backslashes3, with: Substitutions.Out.backslash)
+            .replacingOccurrences(of: Substitutions.In.openBrace, with: Substitutions.Out.openBrace)
+            .replacingOccurrences(of: Substitutions.In.closeBrace, with: Substitutions.Out.closeBrace)
+        dataJson = dataJson
+            .replacingOccurrences(of: Substitutions.In.name1, with: Substitutions.Out.name)
+            .replacingOccurrences(of: Substitutions.In.name2, with: Substitutions.Out.name)
+            .replacingOccurrences(of: Substitutions.In.offers, with: Substitutions.Out.offers)
+            .replacingOccurrences(of: Substitutions.In.recipes, with: Substitutions.Out.recipes)
+        dataJson = dataJson
+            .replacingOccurrences(of: Substitutions.In.count, with: Substitutions.Out.count)
+            .replacingOccurrences(of: Substitutions.In.enchantments, with: Substitutions.Out.enchantments)
+            .replacingOccurrences(of: Substitutions.In.enchantment, with: Substitutions.Out.enchantment)
+            .replacingOccurrences(of: Substitutions.In.level, with: Substitutions.Out.level)
+        dataJson = dataJson
+            .replacingOccurrences(of: Substitutions.In.potion, with: Substitutions.Out.potion)
+            .replacingOccurrences(of: Substitutions.In.customModelData, with: Substitutions.Out.customModelData)
+            .replacingOccurrences(of: Substitutions.In.false, with: Substitutions.Out.false)
+            .replacingOccurrences(of: Substitutions.In.true, with: Substitutions.Out.true)
 
         guard let decodedVillager = try? JSONDecoder().decode(Villager.self, from: Data(dataJson.utf8)) else {
             throw Abort(.custom(code: 6, reasonPhrase: "Could not deserialize villager data \(dataJson)"))
@@ -122,6 +122,52 @@ final class Merchant: Model, Content {
                 let color: String?
                 let text: String?
             }
+        }
+    }
+
+    private enum Substitutions
+    {
+        public enum In
+        {
+            static let summon = "summon villager ~ ~ ~ "
+            static let regex = "([A-Za-z]+):([0-9]|\"|false|true|\\[|\\{)"
+            static let backslashes1 = "\"\\\""
+            static let backslashes2 = "\\\"\""
+            static let backslashes3 = "\\\""
+            static let openBrace = "\"{"
+            static let closeBrace = "}\""
+            static let name1 = "CustomName"
+            static let name2 = "Name"
+            static let offers = "Offers"
+            static let recipes = "Recipes"
+            static let count = "Count"
+            static let enchantments = "StoredEnchantments"
+            static let enchantment = "Enchantment"
+            static let level = "lvl"
+            static let potion = "Potion"
+            static let customModelData = "CustomModelData"
+            static let `false` = "\"false\""
+            static let `true` = "\"true\""
+        }
+
+        public enum Out
+        {
+            static let summon = ""
+            static let regex = "\"$1\":$2"
+            static let backslash = "\""
+            static let openBrace = "{"
+            static let closeBrace = "}"
+            static let name = "name"
+            static let offers = "offers"
+            static let recipes = "recipes"
+            static let count = "count"
+            static let enchantments = "enchantments"
+            static let enchantment = "enchantment"
+            static let level = "level"
+            static let potion = "potion"
+            static let customModelData = "customModelData"
+            static let `false` = "false"
+            static let `true` = "true"
         }
     }
 }
