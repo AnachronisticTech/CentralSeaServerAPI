@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/fluent-kit.git",
         "state": {
           "branch": null,
-          "revision": "763627fbb81f3fdcf5d38db15afae41d7926eee3",
-          "version": "1.43.0"
+          "revision": "46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+          "version": "1.43.2"
         }
       },
       {
@@ -141,8 +141,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "5f542894dd8efbd766d8adf73ef2f947b0cd5e21",
-          "version": "2.56.0"
+          "revision": "a2e487b77f17edbce9a65f2b7415f2f479dc8e48",
+          "version": "2.57.0"
         }
       },
       {
@@ -195,8 +195,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "1baf62327cc55f55a0767c3a9414dec8ebfdff96",
-          "version": "4.77.1"
+          "revision": "e98077ddd1e3535bea6c9514f99d57463816c3bd",
+          "version": "4.77.2"
         }
       },
       {
@@ -204,8 +204,8 @@
         "repositoryURL": "https://github.com/AnachronisticTech/WebServiceBuilder",
         "state": {
           "branch": null,
-          "revision": "a9f8a07d8809c215ba5afd0413145de0859aea95",
-          "version": "1.0.0"
+          "revision": "77c7ace379ea4753cad3ae4c7c56982a4096fe33",
+          "version": "1.0.1"
         }
       },
       {
