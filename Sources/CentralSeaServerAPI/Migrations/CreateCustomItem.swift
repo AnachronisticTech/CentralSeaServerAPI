@@ -12,6 +12,7 @@ struct CreateCustomItem: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database
             .schema(CustomItem.schema)
+            .ignoreExisting()
             .id()
             .field("itemId", .string, .required)
             .field("customModelData", .int, .required)

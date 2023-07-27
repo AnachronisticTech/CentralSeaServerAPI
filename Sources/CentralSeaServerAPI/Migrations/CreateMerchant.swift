@@ -12,6 +12,7 @@ struct CreateMerchant: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database
             .schema(Merchant.schema)
+            .ignoreExisting()
             .id()
             .field("name", .string, .required)
             .field("data", .string, .required)

@@ -10,6 +10,7 @@ import Fluent
 struct CreateNewsItem: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         database.schema("news")
+            .ignoreExisting()
             .id()
             .field("publisher", .string, .required)
             .field("category", .string, .required)
