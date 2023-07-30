@@ -69,8 +69,8 @@ struct CentralSeaServerAPI: RouteCollection {
 
         do {
             try FileManager.default.unzipItem(
-                at: URL(string: "file:///\(contentPath)/datapack.zip")!,
-                to: URL(string: "file:///\(contentPath)/datapack")!
+                at: URL(fileURLWithPath: "\(contentPath)/datapack.zip"),
+                to: URL(fileURLWithPath: "\(contentPath)/datapack")
             )
         } catch {
             throw Abort(.custom(code: 2, reasonPhrase: "Could not extract archive"))
@@ -120,8 +120,8 @@ struct CentralSeaServerAPI: RouteCollection {
 
         do {
             try FileManager.default.unzipItem(
-                at: URL(string: "file:///\(contentPath)/resources.zip")!,
-                to: URL(string: "file:///\(contentPath)/resources")!
+                at: URL(fileURLWithPath: "\(contentPath)/resources.zip"),
+                to: URL(fileURLWithPath: "\(contentPath)/resources")
             )
         } catch {
             throw Abort(.custom(code: 2, reasonPhrase: "Could not extract archive"))
@@ -133,8 +133,8 @@ struct CentralSeaServerAPI: RouteCollection {
             }
 
             try FileManager.default.moveItem(
-                at: URL(string: "file:///\(contentPath)/resources/assets/minecraft")!,
-                to: URL(string: "file:///\(contentPath)/minecraft")!
+                at: URL(fileURLWithPath: "\(contentPath)/resources/assets/minecraft"),
+                to: URL(fileURLWithPath: "\(contentPath)/minecraft")
             )
         } catch {
             throw Abort(.custom(code: 3, reasonPhrase: "Could not move directory"))
@@ -154,7 +154,7 @@ struct CentralSeaServerAPI: RouteCollection {
         for path in paths {
             req.logger.info("\(path)")
             guard
-                let input = try? decoder.decode(CustomItem.Input.self, from: Data(contentsOf: URL(string: "file:///\(contentPath)/minecraft/models/item/\(path)")!, options: [])),
+                let input = try? decoder.decode(CustomItem.Input.self, from: Data(contentsOf: URL(fileURLWithPath: "\(contentPath)/minecraft/models/item/\(path)"), options: [])),
                 let overrides = input.overrides else { continue }
 
             for item in overrides {
