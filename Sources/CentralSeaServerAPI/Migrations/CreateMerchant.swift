@@ -7,20 +7,37 @@
 
 import Vapor
 import FluentKit
+import FluentSQL
+import MySQLNIO
 
-struct CreateMerchant: Migration {
-    func prepare(on database: Database) -> EventLoopFuture<Void> {
-        return database
+struct CreateMerchant: Migration
+{
+    func prepare(on database: Database) -> EventLoopFuture<Void>
+    {
+        let builder = database
             .schema(Merchant.schema)
             .ignoreExisting()
             .id()
             .field("name", .string, .required)
-            .field("data", .string, .required)
+
+        if database is MySQLDatabase
+        {
+            builder
+                .field("data", .sql(raw: "TEXT"), .required)
+        }
+        else
+        {
+            builder
+                .field("data", .string, .required)
+        }
+
+        return builder
             .field("isLimitedTime", .bool, .required)
             .create()
     }
 
-    func revert(on database: Database) -> EventLoopFuture<Void> {
+    func revert(on database: Database) -> EventLoopFuture<Void>
+    {
         return database
             .schema(Merchant.schema)
             .delete()
