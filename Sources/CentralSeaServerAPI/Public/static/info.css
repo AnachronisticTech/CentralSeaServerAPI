@@ -1,0 +1,336 @@
+/* GLOBAL STYLES */
+@font-face {
+  font-family: MinecraftFont;
+  src: url(/CentralSeaServer/static/82ba08919dc2add9422f.otf) format("opentype");
+}
+/* Set default transition time to 0s */
+* {
+  transition: 0s;
+}
+/* Hide element click outline */
+:focus {
+  outline: none;
+}
+body {
+  background: url(/CentralSeaServer/static/0dd0389f6defba07c37a.png) repeat scroll;
+  overflow-x: hidden;
+}
+nav {
+  background: #3d2800;
+  height: 75px;
+  text-align: center;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0px;
+  z-index: 1000;
+  margin: 0px;
+  padding: 0% 10%;
+  box-shadow: 0px 6px #0009;
+}
+nav > * {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+nav > button {
+  border: none;
+  text-align: center;
+  vertical-align: top;
+  text-decoration: none;
+  cursor: pointer;
+  width: 20%;
+  height: 100%;
+  transition: 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff0;
+  font-family: MinecraftFont;
+  color: #DDD;
+  font-size: 20pt;
+  text-shadow: 2px 2px #000A;
+}
+nav > button:hover {
+  background: #fff1;
+}
+nav > #logo {
+  content: url(/CentralSeaServer/static/399c620e166b112e6df2.png);
+  width: 100px;
+  box-shadow: 0px 6px #0009;
+}
+input[type="file"] {
+  display: none;
+}
+#main {
+  padding-bottom: 10px;
+}
+.minecraft-row {
+  background: #999 url(/CentralSeaServer/static/14e0527f572d09481333.png);
+  padding: 5px 10px 2px 10px;
+  font-size: 20pt;
+  box-shadow: inset -4px -6px #0006, inset 4px 4px #FFF7;
+  image-rendering: pixelated;
+  border: 4px solid #000;
+}
+.minecraft-row,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: MinecraftFont;
+  color: #DDD;
+  text-shadow: 2px 2px #000A;
+}
+.minecraft-button {
+  background: #999 url(/CentralSeaServer/static/14e0527f572d09481333.png);
+  padding: 5px 10px 2px 10px;
+  font-size: 20pt;
+  box-shadow: inset -4px -6px #0006, inset 4px 4px #FFF7;
+  image-rendering: pixelated;
+  border: 4px solid #000;
+  font-family: MinecraftFont;
+  color: #DDD;
+  text-shadow: 2px 2px #000A;
+  margin-top: 8px;
+  padding: 10px 30px 10px 30px;
+  user-select: none;
+}
+.minecraft-button:hover {
+  background: #b2b6ff url(/CentralSeaServer/static/dc506441ba6e60d6e794.png);
+  text-shadow: 2px 2px #202013CC;
+  color: #FFFFA0;
+}
+.minecraft-button:active {
+  box-shadow: inset -2px -4px #0004, inset 2px 2px #FFF5;
+}
+.split-container {
+  display: flex;
+  position: relative;
+}
+.split-container > * {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: calc(50% - 20px);
+}
+textarea.debug-input {
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+}
+.vstack {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 0 0;
+}
+.vstack > textarea.debug-input {
+  margin: 0 0 10px 0;
+  height: 100%;
+}
+.hstack {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 0 0 0;
+  gap: 10px;
+}
+.hstack > * {
+  width: 100%;
+}
+#search {
+  font-family: MinecraftFont;
+  font-size: 20pt;
+  color: #DDD;
+  background: transparent;
+  border-width: 0px 0px 4px 0px;
+  height: fit-content;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+#search:placeholder-shown {
+  font-style: italic;
+}
+#clear-search {
+  width: fit-content;
+}
+.trade-item {
+  user-select: none;
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-left: 10px;
+}
+.trade-item img,
+.trade-item object {
+  width: 60px;
+  height: 60px;
+}
+.trade-arrow {
+  content: url(/CentralSeaServer/static/89fce47dbf53b972ceef.png);
+  width: 60px;
+  height: 60px;
+}
+.trade-item p {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  right: 0;
+  bottom: -5px;
+  z-index: 1;
+}
+.tooltip {
+  user-select: none;
+  display: inline-block;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 15px solid;
+  border-image-source: url(/CentralSeaServer/static/5109e8ae8d18817ef7f7.png);
+  border-image-repeat: stretch;
+  border-image-slice: 9;
+  position: absolute;
+  z-index: 10;
+  left: 100%;
+}
+.trade-item:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.tooltip > * {
+  position: relative;
+  padding: 0 5px;
+  background-color: #1b0c1b;
+  font-family: MinecraftFont;
+  color: #DDD;
+  font-size: 20pt;
+  text-shadow: 2px 2px #000A;
+}
+.tooltip p {
+  position: relative;
+  white-space: nowrap;
+  text-transform: capitalize;
+  padding: 0;
+  margin: 0;
+}
+.tooltip p.tooltip-enchanted-title {
+  color: #50f1f1;
+  font-style: italic;
+}
+.tooltip p.tooltip-enchantment {
+  color: #0a0;
+}
+.tooltip p.tooltip-content {
+  color: #a8a8a8;
+}
+.tooltip p.tooltip-item-id {
+  text-transform: none;
+  color: #545454;
+}
+.chat-black {
+  color: #000;
+}
+.chat-dark-blue {
+  color: #00a;
+}
+.chat-dark-green {
+  color: #0a0;
+}
+.chat-dark-aqua {
+  color: #0aa;
+}
+.chat-dark-red {
+  color: #a00;
+}
+.chat-dark-purple {
+  color: #a0a;
+}
+.chat-gold {
+  color: #fa0;
+}
+.chat-gray {
+  color: #aaa;
+}
+.chat-dark-gray {
+  color: #555;
+}
+.chat-blue {
+  color: #55f;
+}
+.chat-green {
+  color: #5f5;
+}
+.chat-aqua {
+  color: #5ff;
+}
+.chat-red {
+  color: #f55;
+}
+.chat-light-purple {
+  color: #f5f;
+}
+.chat-yellow {
+  color: #ff5;
+}
+.chat-white {
+  color: #fff;
+}
+.hidden {
+  visibility: hidden;
+  position: absolute;
+}
+.debug {
+  background-color: red;
+}
+.debug2 {
+  background-color: green;
+}
+/* RESET STYLES */
+/* Set page height to 100% of viewport height */
+html {
+  height: 100%;
+}
+/* Remove body padding and margins */
+body {
+  padding: 0px;
+  margin: 0px;
+}
+/* RESPONSIVE STYLES */
+/* Screens narrower than 360px */
+/* Screens between 360px and 575px */
+@media only screen and (max-width: 575px) and (min-width: 360px) {
+  #main {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+/* Screens between 576px and 899px */
+@media only screen and (max-width: 899px) and (min-width: 576px) {
+  #main {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+/* Screens between 900px and 1249px */
+@media only screen and (max-width: 1249px) and (min-width: 900px) {
+  #main {
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+}
+/* Screens between 1250px and 1649px */
+@media only screen and (max-width: 1649px) and (min-width: 1250px) {
+  #main {
+    margin-left: 300px;
+    margin-right: 300px;
+  }
+}
+/* Screens wider than 1650px */
+@media only screen and (min-width: 1650px) {
+  #main {
+    margin-left: 300px;
+    margin-right: 300px;
+  }
+}
+

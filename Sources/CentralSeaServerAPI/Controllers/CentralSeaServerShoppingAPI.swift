@@ -1,6 +1,6 @@
 //
 //  CentralSeaServerAPI.swift
-//  
+//
 //
 //  Created by Daniel Marriner on 08/10/2022.
 //
@@ -9,7 +9,7 @@ import Vapor
 import Fluent
 import ZIPFoundation
 
-struct CentralSeaServerAPI: RouteCollection {
+struct CentralSeaServerShoppingAPI: RouteCollection {
     let contentPath: String
 
     func boot(routes: RoutesBuilder) throws {
@@ -17,16 +17,16 @@ struct CentralSeaServerAPI: RouteCollection {
 
         let shopping = api.grouped("shopping")
 
-//        shopping.get(use: getAllMerchants)
-        shopping.group(CORSMiddleware(
-            configuration: CORSMiddleware.Configuration(
-                allowedOrigin: .all,
-                allowedMethods: [.GET, .POST, .DELETE],
-                allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
-            )
-        )) { cors in
-            cors.get(use: getAllMerchants)
-        }
+        shopping.get(use: getAllMerchants)
+//        shopping.group(CORSMiddleware(
+//            configuration: CORSMiddleware.Configuration(
+//                allowedOrigin: .all,
+//                allowedMethods: [.GET, .POST, .DELETE],
+//                allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
+//            )
+//        )) { cors in
+//            cors.get(use: getAllMerchants)
+//        }
 
         shopping.post("datapack", use: updateDatapack)
         shopping.post("resources", use: updateResources)

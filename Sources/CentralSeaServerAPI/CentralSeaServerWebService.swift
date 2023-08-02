@@ -29,7 +29,8 @@ public struct CentralSeaServerService : API, FileServer, MigrationsProvider
         publicDirectoryPathComponent = pathComponent
         self.logBehaviour = logBehaviour
         routeCollections = [
-            CentralSeaServerAPI(contentPath: "\(publicPath)\(pathComponent)/content"),
+            CentralSeaServer(staticPath: "\(publicPath)\(pathComponent)/static"),
+            CentralSeaServerShoppingAPI(contentPath: "\(publicPath)\(pathComponent)/content"),
             CentralSeaServerNewsAPI(providerId: "csnn")
         ]
     }
