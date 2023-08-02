@@ -17,6 +17,7 @@ struct CentralSeaServer: RouteCollection
         group.get("market", use: getMarket)
         group.get("maps", use: getMaps)
         group.get("info", use: getInfo)
+        group.get("update", use: getUpdate)
     }
 
     func getHome(req: Request) throws -> Response
@@ -37,5 +38,10 @@ struct CentralSeaServer: RouteCollection
     func getInfo(req: Request) throws -> Response
     {
         req.fileio.streamFile(at: "\(staticPath)/info.html")
+    }
+
+    func getUpdate(req: Request) throws -> Response
+    {
+        req.fileio.streamFile(at: "\(staticPath)/update.html")
     }
 }
