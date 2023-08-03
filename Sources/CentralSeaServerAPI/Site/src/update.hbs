@@ -1,0 +1,28 @@
+{{#[base] htmlWebpackPlugin}}
+<h1>Update</h1>
+<label>
+    <h2>Password: </h2>
+    <input type="password" name="secret" id="secret">
+</label>
+<div class="hstack">
+    <div class="debug">
+        <form data-name="datapack" id="datapack-form">
+            <label class="minecraft-button">
+                <input type="file" name="content"/>
+                Select Datapack
+            </label>
+        </form>
+        <button class="minecraft-button" id="update-datapack">Update</button>
+    </div>
+    <div class="debug2">
+        <form data-name="resources" id="resources-form">
+            <label class="minecraft-button">
+                <input type="file" name="content"/>
+                Select Resource Pack
+            </label>
+        </form>
+        <button class="minecraft-button" id="update-resources">Update</button>
+    </div>
+</div>
+<div id="result" class="hidden"></div>
+{{/[base]}}
