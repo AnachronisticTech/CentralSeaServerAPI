@@ -8,11 +8,26 @@
 import Vapor
 import Fluent
 
-struct CentralSeaServerNewsAPI: RouteCollection {
+struct CentralSeaServerNewsAPI: RouteCollection
+{
     let providerId: PathComponent
+    let devMode: Bool
 
-    func boot(routes: RoutesBuilder) throws {
-        let news = routes.grouped("css-api", "news", providerId)
+    func boot(routes: RoutesBuilder) throws
+    {
+//        let news = routes.grouped("css-api", "news", providerId)
+        let news: RoutesBuilder
+        if devMode
+        {
+            news = routes
+                .grouped(CentralSeaServerService.corsMiddleware)
+                .grouped("css-api", "news", providerId)
+        }
+        else
+        {
+            news = routes.grouped("css-api", "news", providerId)
+        }
+
         news.get(use: getAllNews)
         news.get("latest", use: getLatestNews)
         news.get("since", ":date", use: getNewsSince)
@@ -26,7 +41,8 @@ struct CentralSeaServerNewsAPI: RouteCollection {
     }
 
     // MARK: - Handlers relating to news
-    func getAllNews(req: Request) -> EventLoopFuture<[NewsItem]> {
+    func getAllNews(req: Request) -> EventLoopFuture<[NewsItem]>
+    {
         NewsItem
             .query(on: req.db)
             .filter(\.$publisher == providerId.description)
@@ -34,7 +50,8 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .all()
     }
 
-    func getLatestNews(req: Request) throws -> EventLoopFuture<[NewsItem]> {
+    func getLatestNews(req: Request) throws -> EventLoopFuture<[NewsItem]>
+    {
         NewsItem
             .query(on: req.db)
             .filter(\.$publisher == providerId.description)
@@ -44,13 +61,18 @@ struct CentralSeaServerNewsAPI: RouteCollection {
                     items
                         .reduce([String: NewsItem]()) { dict, item in
                             var dict = dict
-                            if let current = dict[item.category] {
-                                if item.published! > current.published! {
+                            if let current = dict[item.category]
+                            {
+                                if item.published! > current.published!
+                                {
                                     dict[item.category] = item
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 dict[item.category] = item
                             }
+
                             return dict
                         }
                         .values
@@ -59,8 +81,10 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             }
     }
 
-    func getNewsSince(req: Request) throws -> EventLoopFuture<[NewsItem]> {
-        guard let dateString = req.parameters.get("date"), let date = NewsItem.dateFormatter.date(from: dateString) else {
+    func getNewsSince(req: Request) throws -> EventLoopFuture<[NewsItem]>
+    {
+        guard let dateString = req.parameters.get("date"), let date = NewsItem.dateFormatter.date(from: dateString) else
+        {
             throw Abort(.badRequest)
         }
 
@@ -72,19 +96,18 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .all()
     }
 
-    func getCategories(req: Request) throws -> EventLoopFuture<[String]> {
+    func getCategories(req: Request) throws -> EventLoopFuture<[String]>
+    {
         NewsItem
             .query(on: req.db)
             .unique()
             .all(\.$category)
     }
 
-    func createNewNewsItem(req: Request) throws -> EventLoopFuture<NewsItem> {
+    func createNewNewsItem(req: Request) throws -> EventLoopFuture<NewsItem>
+    {
         let payload = try req.content.decode(SecurePayload<NewsItem>.self)
-
-        guard let secret = Environment.get("UPLOAD_SECRET"), try Bcrypt.verify(payload.secret, created: secret) else {
-            throw Abort(.unauthorized)
-        }
+        try CentralSeaServerService.validate(secret: payload.secret)
 
         let newsItem = payload.content
         newsItem.publisher = providerId.description
@@ -93,14 +116,13 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .map { newsItem }
     }
 
-    func deleteNewsItem(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    func deleteNewsItem(req: Request) throws -> EventLoopFuture<HTTPStatus>
+    {
         let payload = try req.content.decode(Secret.self)
+        try CentralSeaServerService.validate(secret: payload.secret)
 
-        guard let secret = Environment.get("UPLOAD_SECRET"), try Bcrypt.verify(payload.secret, created: secret) else {
-            throw Abort(.unauthorized)
-        }
-
-        guard let id = req.parameters.get("id", as: UUID.self) else {
+        guard let id = req.parameters.get("id", as: UUID.self) else
+        {
             throw Abort(.badRequest)
         }
 
@@ -111,14 +133,13 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .map { .ok }
     }
 
-    func updateNewsItem(req: Request) throws -> EventLoopFuture<NewsItem> {
+    func updateNewsItem(req: Request) throws -> EventLoopFuture<NewsItem>
+    {
         let payload = try req.content.decode(SecurePayload<NewsItemPatch>.self)
+        try CentralSeaServerService.validate(secret: payload.secret)
 
-        guard let secret = Environment.get("UPLOAD_SECRET"), try Bcrypt.verify(payload.secret, created: secret) else {
-            throw Abort(.unauthorized)
-        }
-
-        guard let id = req.parameters.get("id", as: UUID.self) else {
+        guard let id = req.parameters.get("id", as: UUID.self) else
+        {
             throw Abort(.badRequest)
         }
 
@@ -126,15 +147,18 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { item in
-                if let category = payload.content.category {
+                if let category = payload.content.category
+                {
                     item.category = category
                 }
 
-                if let headline = payload.content.headline {
+                if let headline = payload.content.headline
+                {
                     item.headline = headline
                 }
 
-                if let description = payload.content.description {
+                if let description = payload.content.description
+                {
                     item.description = description
                 }
 
@@ -144,8 +168,10 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             }
     }
 
-    func getAllByCategory(req: Request) throws -> EventLoopFuture<[NewsItem]> {
-        guard let category = req.parameters.get("category") else {
+    func getAllByCategory(req: Request) throws -> EventLoopFuture<[NewsItem]>
+    {
+        guard let category = req.parameters.get("category") else
+        {
             throw Abort(.badRequest)
         }
 
@@ -157,8 +183,10 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .all()
     }
 
-    func getLatestByCategory(req: Request) throws -> EventLoopFuture<NewsItem> {
-        guard let category = req.parameters.get("category") else {
+    func getLatestByCategory(req: Request) throws -> EventLoopFuture<NewsItem>
+    {
+        guard let category = req.parameters.get("category") else
+        {
             throw Abort(.badRequest)
         }
 
@@ -171,12 +199,15 @@ struct CentralSeaServerNewsAPI: RouteCollection {
             .unwrap(or: FluentError.noResults)
     }
 
-    func getSinceByCategory(req: Request) throws -> EventLoopFuture<[NewsItem]> {
-        guard let category = req.parameters.get("category") else {
+    func getSinceByCategory(req: Request) throws -> EventLoopFuture<[NewsItem]>
+    {
+        guard let category = req.parameters.get("category") else
+        {
             throw Abort(.badRequest)
         }
 
-        guard let dateString = req.parameters.get("date"), let date = NewsItem.dateFormatter.date(from: dateString) else {
+        guard let dateString = req.parameters.get("date"), let date = NewsItem.dateFormatter.date(from: dateString) else
+        {
             throw Abort(.badRequest)
         }
 
