@@ -27,6 +27,7 @@ let package = Package(
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "ZIPFoundation", package: "ZIPFoundation")
             ],
+            exclude: ["Site"],
             resources: [
                 .copy("Public")
             ]
