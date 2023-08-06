@@ -3,14 +3,16 @@ import { Masonry } from "@fristys/masonry"; // Docs: https://fristys.github.io/m
 import { v4 as UUID } from "uuid";
 import { API } from "./API";
 
-class Merchant {
+class Merchant
+{
     id: string;
     isLimitedTime: boolean;
     name: string;
     trades: Trade[];
     uuid: string;
 
-    constructor(id: string, isLimitedTime: boolean, name: string, trades: Trade[], uuid: string = UUID()) {
+    constructor(id: string, isLimitedTime: boolean, name: string, trades: Trade[], uuid: string = UUID())
+    {
         this.uuid = uuid;
         this.id = id;
         this.isLimitedTime = isLimitedTime;
@@ -18,7 +20,8 @@ class Merchant {
         this.trades = trades.map(trade => Trade.init(trade));
     }
 
-    static init(merchant: Merchant): Merchant {
+    static init(merchant: Merchant): Merchant
+    {
         return new Merchant(
             merchant.id,
             merchant.isLimitedTime,
@@ -29,24 +32,30 @@ class Merchant {
     }
 }
 
-class Trade {
+class Trade
+{
     buy: Item;
     buyB: Item | null;
     sell: Item;
     uuid: string;
 
-    constructor(buy: Item, buyB: Item | null, sell: Item, uuid: string = UUID()) {
+    constructor(buy: Item, buyB: Item | null, sell: Item, uuid: string = UUID())
+    {
         this.uuid = uuid;
         this.buy = new Item(buy.id, buy.count, buy.tag);
         this.sell = new Item(sell.id, sell.count, sell.tag);
-        if (buyB != null) {
+        if (buyB != null)
+        {
             this.buyB = new Item(buyB.id, buyB.count, buyB.tag);
-        } else {
+        }
+        else
+        {
             this.buyB = null;
         }
     }
 
-    static init(trade: Trade): Trade {
+    static init(trade: Trade): Trade
+    {
         return new Trade(
             trade.buy,
             trade.buyB,
@@ -56,33 +65,40 @@ class Trade {
     }
 }
 
-class Item {
+class Item
+{
     id: string;
     count: number;
     tag: Tag | null;
 
-    constructor(id: string, count: number = 1, tag: Tag | null = null) {
+    constructor(id: string, count: number = 1, tag: Tag | null = null)
+    {
         this.id = id;
         this.count = count;
         this.tag = tag;
     }
 
-    get name(): string {
+    get name(): string
+    {
         return this.tag?.display?.name.text
             ?? this.tag?.potion?.replace("minecraft:", "").replaceAll("_", " ").replace(/^/, "Potion of ")
             ?? this.id.replace("minecraft:", "").replaceAll("_", " ");
     }
 
-    get nameColor(): string | null {
+    get nameColor(): string | null
+    {
         return this.tag?.display?.name.color?.replace("_", "-") ?? null;
     }
 
-    get enchantments(): Enchantment[] {
+    get enchantments(): Enchantment[]
+    {
         return this.tag?.enchantments ?? [];
     }
 
-    get customModelData(): number | null {
-        if (this.tag !== undefined && this.tag !== null && this.tag.customModelData !== undefined && this.tag.customModelData !== null) {
+    get customModelData(): number | null
+    {
+        if (this.tag !== undefined && this.tag !== null && this.tag.customModelData !== undefined && this.tag.customModelData !== null)
+        {
             return this.tag.customModelData;
         }
 
@@ -90,40 +106,48 @@ class Item {
     }
 }
 
-type Tag = {
+type Tag =
+{
     display: Display | null;
     customModelData: number | null;
     potion: string | null
     enchantments: Enchantment[] | null
 }
 
-type Display = {
+type Display =
+{
     name: TagName;
 }
 
-type TagName = {
+type TagName =
+{
     italic: boolean | null;
     color: string | null;
     text: string | null;
 }
 
-type Enchantment = {
+type Enchantment =
+{
     id: string;
     level: number;
 }
 
-type CustomItemData = {
+type CustomItemData =
+{
     overrides: CustomItemDataOverrides[];
 }
-type CustomItemDataOverrides = {
+type CustomItemDataOverrides =
+{
     predicate: CustomItemDataPredicate;
     model: string;
 }
-type CustomItemDataPredicate = {
+type CustomItemDataPredicate =
+{
     custom_model_data: number;
 }
 
-type APIResult = {
+type APIResult =
+{
     namespacedId: string;
     image: string;
 }
@@ -134,9 +158,15 @@ let merchantViews: Map<string, HTMLDivElement> = new Map<string, HTMLDivElement>
 let tradeRows: Map<string, HTMLDivElement> = new Map<string, HTMLDivElement>();
 
 const container: HTMLDivElement = document.getElementById("trade-container") as HTMLDivElement;
-const masonry = new Masonry(container, {
-    // columns: 3,
-    useContainerWidth: true
+const masonry = new Masonry(container,
+{
+    columns: 4,
+    columnBreakpoints:
+    {
+        1835: 3,
+        1545: 2,
+        655: 1
+    }
 });
 
 const searchTextInput: HTMLInputElement = document.getElementById("search") as HTMLInputElement;
@@ -144,14 +174,16 @@ searchTextInput.addEventListener("input", render)
 
 const invisibleContainer: HTMLDivElement = document.getElementById("invisible-container") as HTMLDivElement;
 const clearSearchButton: HTMLButtonElement = document.getElementById("clear-search") as HTMLButtonElement;
-clearSearchButton.addEventListener("click", _ => {
+clearSearchButton.addEventListener("click", _ =>
+{
     searchTextInput.value = "";
     render();
 });
 
 load();
 
-function createMerchantView(merchant: Merchant): HTMLDivElement {
+function createMerchantView(merchant: Merchant): HTMLDivElement
+{
     const view = document.createElement("div");
     view.id = merchant.uuid;
 
@@ -159,21 +191,24 @@ function createMerchantView(merchant: Merchant): HTMLDivElement {
     title.innerHTML = merchant.name;
     view.appendChild(title);
 
-    for (const trade of merchant.trades) {
+    for (const trade of merchant.trades)
+    {
         tradeRows.set(trade.uuid, view.appendChild(createTradeRowView(trade)));
     }
 
     return view;
 }
 
-function createTradeRowView(trade: Trade): HTMLDivElement {
+function createTradeRowView(trade: Trade): HTMLDivElement
+{
     const row = document.createElement("div");
     row.id = trade.uuid;
     row.classList.add("minecraft-row");
 
     row.appendChild(createTradeRowItemView(trade.buy));
 
-    if (trade.buyB != null) {
+    if (trade.buyB != null)
+    {
         row.appendChild(createTradeRowItemView(trade.buyB));
     }
 
@@ -186,11 +221,13 @@ function createTradeRowView(trade: Trade): HTMLDivElement {
     return row;
 }
 
-function createTradeRowItemView(item: Item): HTMLDivElement {
+function createTradeRowItemView(item: Item): HTMLDivElement
+{
     const itemView = document.createElement("div");
     itemView.classList.add("trade-item");
 
-    if (item.customModelData != null) {
+    if (item.customModelData != null)
+    {
         // const imageFallbackView = document.createElement("object");
         // imageFallbackView.data = "https://minecraft-api.vercel.app/images/items/barrier.png";
         // imageFallbackView.type = "image/png";
@@ -199,22 +236,30 @@ function createTradeRowItemView(item: Item): HTMLDivElement {
         imageView.src = `${API.baseURL}/css-api/shopping/customItems/${item.id.replace("minecraft:", "")}/${item.customModelData}`;
 
         itemView.appendChild(imageView);
-    } else {
+    }
+    else
+    {
         const imageView = document.createElement("img");
         const id = item.id.replace("minecraft:", "");
         const imageUrl = imageMap.get(id);
-        if (id == "potion") {
+        if (id == "potion")
+        {
             imageView.src = "https://minecraft-api.vercel.app/images/items/potion_of_fire_resistance.gif";
-        } else if (imageUrl !== undefined && imageUrl !== null) {
+        }
+        else if (imageUrl !== undefined && imageUrl !== null)
+        {
             imageView.src = imageUrl;
-        } else {
+        }
+        else
+        {
             imageView.src = "https://minecraft-api.vercel.app/images/items/barrier.png";
         }
 
         itemView.appendChild(imageView);
     }
 
-    if (item.count > 1) {
+    if (item.count > 1)
+    {
         const itemQuantityView = document.createElement("p");
         itemQuantityView.innerText = item.count.toString();
         itemView.appendChild(itemQuantityView);
@@ -225,7 +270,8 @@ function createTradeRowItemView(item: Item): HTMLDivElement {
     return itemView;
 }
 
-function createTooltipView(item: Item): HTMLDivElement {
+function createTooltipView(item: Item): HTMLDivElement
+{
     const tooltipContainerView = document.createElement("div");
     tooltipContainerView.classList.add("tooltip");
     const tooltipView = document.createElement("div");
@@ -233,13 +279,15 @@ function createTooltipView(item: Item): HTMLDivElement {
 
     const titleLabel = document.createElement("p");
     titleLabel.innerText = item.name;
-    if (item.nameColor != null) {
+    if (item.nameColor != null)
+    {
         titleLabel.classList.add(`chat-${item.nameColor}`);
     }
 
     tooltipView.appendChild(titleLabel);
 
-    for (const enchantment of item.enchantments) {
+    for (const enchantment of item.enchantments)
+    {
         if (enchantment.level == 0) { continue; }
         const enchantmentLabel = document.createElement("p");
         enchantmentLabel.classList.add("tooltip-enchantment")
@@ -255,11 +303,14 @@ function createTooltipView(item: Item): HTMLDivElement {
     return tooltipContainerView;
 }
 
-function load() {
+function load()
+{
     const request = new XMLHttpRequest();
     request.open("GET", "https://minecraft-api.vercel.app/api/items", true)
-    request.onload = function() {
-        for (const data of JSON.parse(this.responseText) as APIResult[]) {
+    request.onload = function()
+    {
+        for (const data of JSON.parse(this.responseText) as APIResult[])
+        {
             imageMap.set(data.namespacedId, data.image);
         }
 
@@ -269,13 +320,16 @@ function load() {
     request.send();
 }
 
-function loadData() {
+function loadData()
+{
     const request = new XMLHttpRequest();
     request.open("GET", `${API.baseURL}/css-api/shopping`, true)
-    request.onload = function() {
+    request.onload = function()
+    {
         merchantData = [];
         container.innerHTML = "";
-        for (const unsafeMerchant of JSON.parse(this.responseText) as Merchant[]) {
+        for (const unsafeMerchant of JSON.parse(this.responseText) as Merchant[])
+        {
             if (unsafeMerchant.name == "Black Market") { continue; }
             const merchant = Merchant.init(unsafeMerchant);
             merchantData.push(merchant);
@@ -288,19 +342,24 @@ function loadData() {
     request.send();
 }
 
-function render() {
+function render()
+{
     tradeRows.forEach((element, _key, _map) => element.classList.add("hidden"));
-    merchantViews.forEach((element, _key, _map) => {
+    merchantViews.forEach((element, _key, _map) =>
+    {
         invisibleContainer.appendChild(element);
         element.classList.add("hidden");
     });
 
-    for (const merchant of projectedMerchantData(searchTextInput.value)) {
+    for (const merchant of projectedMerchantData(searchTextInput.value))
+    {
         const merchantView = merchantViews.get(merchant.uuid);
-        if (merchantView !== undefined && merchantView !== null) {
+        if (merchantView !== undefined && merchantView !== null)
+        {
             merchantView.classList.remove("hidden");
             container.appendChild(merchantView);
-            for (const trade of merchant.trades) {
+            for (const trade of merchant.trades)
+            {
                 tradeRows.get(trade.uuid)?.classList.remove("hidden");
             }
         }
@@ -309,13 +368,15 @@ function render() {
     masonry.init();
 }
 
-function projectedMerchantData(term: string): Merchant[] {
+function projectedMerchantData(term: string): Merchant[]
+{
     if (term == "") { return merchantData; }
 
     term = term.toLowerCase();
     return merchantData
         .map(Merchant.init)
-        .filter(merchant => {
+        .filter(merchant =>
+        {
             let projectedMerchant = merchant;
             if (projectedMerchant.name.toLowerCase().includes(term)) { return projectedMerchant; }
 
@@ -335,19 +396,22 @@ function projectedMerchantData(term: string): Merchant[] {
         });
 }
 
-function parseCommand(text: string) {
+function parseCommand(text: string)
+{
     text = text.replace("summon villager ~ ~ ~ ", "");
     text = text.replace(/([A-Za-z]+):([0-9]|"|false|true|\[|\{)/g, '"$1":$2');
     const data = JSON.parse(text);
 
     container.innerHTML = "";
-    for (const trade of data.Offers.Recipes as Trade[]) {
+    for (const trade of data.Offers.Recipes as Trade[])
+    {
         container.appendChild(createTradeRowView(trade));
     }
 }
 
 // Attribution: https://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
-function romanize(num: number): string {
+function romanize(num: number): string
+{
     if (isNaN(num)) { return "NaN"; }
 
     let digits = String(+num).split("");
@@ -358,8 +422,10 @@ function romanize(num: number): string {
     ];
     let roman = "";
     let i = 3;
-    while (i--) {
+    while (i--)
+    {
         roman = (key[Number(digits.pop()) + (i * 10)] || "") + roman;
     }
+
     return Array(+digits.join("") + 1).join("M") + roman;
 }
